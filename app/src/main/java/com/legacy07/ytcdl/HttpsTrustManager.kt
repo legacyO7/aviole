@@ -1,15 +1,85 @@
 package com.legacy07.ytcdl
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager
+import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.attribute.FileAttribute
+import java.nio.file.attribute.PosixFilePermission
+import java.nio.file.attribute.PosixFilePermissions
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.cert.CertificateException
-import javax.net.ssl.*
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 import javax.security.cert.X509Certificate
+
 
 fun logger(string: String){
     Log.d(" output :> ", string)
+}
+
+@Throws(IOException::class)
+fun execCmd(cmd: String?): String? {
+    val s = Scanner(Runtime.getRuntime().exec(cmd).inputStream)
+    return if (s.hasNext()) s.next() else "got nothing"
+}
+
+fun extractTar(sourceFile: File, destDir: File){
+    val ua = TarGZipUnArchiver()
+    var manager:ConsoleLoggerManager = ConsoleLoggerManager()
+    ua.enableLogging(manager.getLoggerForComponent("bla"))
+// -- end of logging part
+// -- end of logging part
+    ua.sourceFile = sourceFile
+    ua.destDirectory = destDir
+    ua.extract()
+}
+
+fun changePermission(path: String){
+
+    val perms: MutableSet<PosixFilePermission> = HashSet()
+    perms.add(PosixFilePermission.OWNER_READ)
+    perms.add(PosixFilePermission.OWNER_WRITE)
+    perms.add(PosixFilePermission.OWNER_EXECUTE)
+
+    perms.add(PosixFilePermission.OTHERS_READ)
+    perms.add(PosixFilePermission.OTHERS_WRITE)
+    perms.add(PosixFilePermission.OTHERS_EXECUTE)
+
+    perms.add(PosixFilePermission.GROUP_READ)
+    perms.add(PosixFilePermission.GROUP_WRITE)
+    perms.add(PosixFilePermission.GROUP_EXECUTE)
+
+    Files.setPosixFilePermissions(Paths.get(path), perms)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.runCommand(workingDir: File): String? {
+    return try {
+        val parts = this.split("\\s".toRegex())
+        val proc = ProcessBuilder(*parts.toTypedArray())
+            .directory(workingDir)
+            .redirectOutput(ProcessBuilder.Redirect.PIPE)
+            .redirectError(ProcessBuilder.Redirect.PIPE)
+            .start()
+       logger(proc.errorStream.bufferedReader().readText())
+        proc.waitFor(60, TimeUnit.MINUTES)
+        proc.inputStream.bufferedReader().readText()
+    } catch(e: IOException) {
+        e.printStackTrace()
+        null
+    }
 }
 
 class HttpsTrustManager : X509TrustManager {
