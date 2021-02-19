@@ -12,16 +12,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        val sdcard: File = Environment.getDownloadCacheDirectory()
-        logger(sdcard.toString())
-
-        logger(packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir);
-
         setContentView(R.layout.activity_main)
-
        // logger(execCmd(packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir+"/youtube-dl").toString())
-
         downloadYtdl(this, packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir).execute()
  }
 
