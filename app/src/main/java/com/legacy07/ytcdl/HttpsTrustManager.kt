@@ -46,7 +46,7 @@ fun extractTar(sourceFile: File, destDir: File){
     ua.extract()
 }
 
-fun changePermission(path: String){
+fun changePermission(path: File){
 
     val perms: MutableSet<PosixFilePermission> = HashSet()
     perms.add(PosixFilePermission.OWNER_READ)
@@ -61,7 +61,7 @@ fun changePermission(path: String){
     perms.add(PosixFilePermission.GROUP_WRITE)
     perms.add(PosixFilePermission.GROUP_EXECUTE)
 
-    Files.setPosixFilePermissions(Paths.get(path), perms)
+    Files.setPosixFilePermissions(path.toPath(), perms)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -74,7 +74,7 @@ fun String.runCommand(workingDir: File): String? {
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
        logger(proc.errorStream.bufferedReader().readText())
-        proc.waitFor(60, TimeUnit.MINUTES)
+        proc.waitFor(5, TimeUnit.SECONDS)
         proc.inputStream.bufferedReader().readText()
     } catch(e: IOException) {
         e.printStackTrace()

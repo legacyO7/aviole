@@ -12,7 +12,7 @@ import java.net.URL
 class downloadYtdl(context: Context, path: String) : AsyncTask<Void, Void, Boolean>() {
     val filePath= "$path/youtube-dl";
     val folderPath= "$path";
-    val tarPath= "$path/termux-backup.tar.gz";
+    val tarPath= "$path/miraklebox";
     private val context=context;
     val ytdl:File=File(filePath)
     override fun doInBackground(vararg params: Void?): Boolean {
@@ -50,14 +50,17 @@ class downloadYtdl(context: Context, path: String) : AsyncTask<Void, Void, Boole
             logger("it is exectable")
         else
             logger("not exec")
+        if(!File("$folderPath/files").exists())
         extractTar(File(tarPath),File(folderPath))
 
-       val file:File= File("$folderPath/usr/bin")
+       val file:File= File("$folderPath/files/usr/bin/")
         file.setWritable(true)
         file.setReadable(true)
         file.setExecutable(true)
-        changePermission("$folderPath/usr/bin/apt")
+     //   logger(execCmd("su")!!)
+       // changePermission(file)
+        changePermission(File("$folderPath/files/usr/lib/libpython3.9.so.1.0"))
         logger(execCmd("uname")!!)
-      "./pkg update".runCommand(file)
+   logger("./python".runCommand(file)!!)
     }
 }
