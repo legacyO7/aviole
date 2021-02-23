@@ -2,11 +2,9 @@ package com.legacy07.aviole
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,17 +12,20 @@ import com.legacy07.aviole.env.downloadYtdl
 import com.legacy07.aviole.env.extractTar
 import com.legacy07.aviole.ui.avHome
 import java.io.File
-import java.util.jar.Manifest
 
 
 @JvmField
 var appPath: String = ""
+
 @JvmField
 var tarPath: String = ""
+
 @JvmField
 var ytdlPath: String = ""
+
 @JvmField
 var homePath: String = ""
+
 @JvmField
 var prefixPath: String = ""
 
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         if (w_permission != PackageManager.PERMISSION_GRANTED && r_permission != PackageManager.PERMISSION_GRANTED) {
             makeRequest()
         } else
-            proceed_to_home()
+            checkBlobs()
 
         try {
             this.supportActionBar!!.hide()
@@ -92,13 +93,13 @@ class MainActivity : AppCompatActivity() {
                         }?.setCancelable(false)?.show()
 
                 } else {
-                    proceed_to_home()
+                    checkBlobs()
                 }
             }
         }
     }
 
-    fun proceed_to_home() {
+    fun checkBlobs() {
 
         val ytdl_bin: File = File(ytdlPath)
 
@@ -114,34 +115,20 @@ class MainActivity : AppCompatActivity() {
             mProgressDialog?.setOnCancelListener {
                 downloadFile.cancel(true) //cancel the task
             }
-        } else if (!File(prefixPath).exists()) {
+        }
+        if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
                 mProgressDialog?.setMessage("Extracting aviole module")
                 mProgressDialog?.setIndeterminate(true);
                 mProgressDialog?.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 extractTar(File(tarPath), File(appPath))
                 mProgressDialog?.cancel()
-            } else {
-                //download module
-
-                alertDialogBuilder?.setTitle("Download avioleModule")
-                    ?.setMessage("Trust me! You wont regret it!")
-                    ?.setPositiveButton(android.R.string.yes) { dialog, which ->
-                        {
-                            //todo
-                        }
-                    }
-                    ?.setNegativeButton(android.R.string.no) { dialog, which ->
-                        dialog.dismiss()
-                    }
-                    ?.show()
-
             }
-        } else {
-            val intent: Intent = Intent(this, avHome::class.java)
-            startActivity(intent)
         }
-
+        if(File(prefixPath).exists()&&ytdl_bin.exists()){
+            startActivity(Intent(applicationContext,avHome::class.java))
+            finish()
+        }
 
     }
 

@@ -28,21 +28,22 @@ class avHome : AppCompatActivity() {
 
         vView.visibility = View.GONE
 
-        urlbutton.setOnClickListener {
-            if (urltext.text.toString().trim() != "") {
-                val uri: Uri = Uri.parse(urltext.text.toString().trim())
-                getLifecycle().addObserver(videoView);
 
-
-
-
-            }
-        }
         videoView.addYouTubePlayerListener(object :
             AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
-                youTubePlayer.loadVideo(extractYTId(urltext.text.toString())!!, 0f)
-                vView.visibility = View.VISIBLE
+
+                urlbutton.setOnClickListener {
+                    if (urltext.text.toString().trim() != "") {
+                        val uri: Uri = Uri.parse(urltext.text.toString().trim())
+                        getLifecycle().addObserver(videoView);
+
+                        if (urltext.text.toString().trim()!="null")
+                            youTubePlayer.loadVideo(extractYTId(urltext.text.toString())!!, 0f)
+                        vView.visibility = View.VISIBLE
+                    }
+                }
+
             }
         })
 
