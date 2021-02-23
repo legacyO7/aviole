@@ -9,16 +9,16 @@ import java.io.FileOutputStream
 import java.net.URL
 
 class downloadYtdl(context: Context, path: String) : AsyncTask<Void, Void, Boolean>() {
-    val filePath= "$path/youtube-dl";
-    val folderPath= "$path";
-    val tarPath= "$path/miraklebox.tar.gz";
-    private val context=context;
-    val ytdl:File=File(filePath)
+    val filePath = "$path/youtube-dl";
+    val folderPath = "$path";
+    val tarPath = "$path/avioleTPeM.tar.gz";
+    private val context = context;
+    val ytdl: File = File(filePath)
     override fun doInBackground(vararg params: Void?): Boolean {
         ytdl.setExecutable(true)
         ytdl.canExecute()
 
-        if(ytdl.exists())
+        if (ytdl.exists())
             logger("file exists")
         else {
             HttpsTrustManager.allowAllSSL()
@@ -45,18 +45,23 @@ class downloadYtdl(context: Context, path: String) : AsyncTask<Void, Void, Boole
         super.onPostExecute(result)
 
         logger("Done !!!")
-        if(   ytdl.canExecute())
-            logger("it is exectable")
-        else
-            logger("not exec")
-        if(!File("$folderPath/files").exists())
-        {
-            logger("Extracting files")
-            extractTar(File(tarPath),File("$folderPath"))
-            logger("Extracted !!")
-        }
-    //   changePermission(File("$folderPath/files/usr/bin/youtube-dl"))
+        if (!File("$folderPath/files").exists()) {
+            if (!File(tarPath).exists())
+                logger("aviole module not found")
+            else {
+                logger("Extracting files")
+                extractTar(File(tarPath), File(folderPath))
+                logger("Extracted !!")
+            }
+        } else {
+            //   changePermission(File("$folderPath/files/usr/bin/youtube-dl"))
 
-        executeAction(homePath,"$folderPath/files/usr/bin/python", arrayOf("youtube-dl","--audio-format","mp3","https://www.youtube.com/watch?v=IpInlVhjLGw"))
+            executeAction(
+                folderPath,
+                "$folderPath/files/usr/bin/python",
+                arrayOf("youtube-dl", "-v")
+            )
+        }
+
     }
 }
