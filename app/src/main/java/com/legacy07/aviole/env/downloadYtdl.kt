@@ -95,7 +95,7 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
 
         ytdl.setExecutable(true)
 
-
+/*
         logger("Done !!!")
         if (!File("$folderPath/files").exists()) {
             if (!File(tarPath).exists())
@@ -105,7 +105,7 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
                 extractTar(File(tarPath), File(folderPath))
                 logger("Extracted !!")
             }
-        } else {
+        } else {*/
             //   changePermission(File("$folderPath/files/usr/bin/youtube-dl"))
 
 //            executeAction(
@@ -113,7 +113,7 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
 //                "$folderPath/files/usr/bin/python",
 //                arrayOf("youtube-dl", "-v")
 //            )
-        }
+ //       }
 
     }
 }
