@@ -1,4 +1,4 @@
-package com.legacy07.ytcdl
+package com.legacy07.aviole
 
 import android.os.Build
 import android.util.Log
@@ -8,10 +8,7 @@ import org.codehaus.plexus.logging.console.ConsoleLoggerManager
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.attribute.FileAttribute
 import java.nio.file.attribute.PosixFilePermission
-import java.nio.file.attribute.PosixFilePermissions
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
