@@ -7,6 +7,7 @@ import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager
 import java.io.File
 import java.io.IOException
+import java.lang.StringBuilder
 import java.nio.file.Files
 import java.nio.file.attribute.PosixFilePermission
 import java.security.KeyManagementException
@@ -21,9 +22,10 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import javax.security.cert.X509Certificate
 
-
+var sb:StringBuilder?=null
 fun logger(string: String){
     Log.d(" output :> ", string)
+    sb?.append(String())
 }
 
 @Throws(IOException::class)

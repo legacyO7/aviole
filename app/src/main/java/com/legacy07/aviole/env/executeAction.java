@@ -13,101 +13,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import static com.legacy07.aviole.env.GlobalVariablesKt.homePath;
+import static com.legacy07.aviole.env.GlobalVariablesKt.outputText;
+import static com.legacy07.aviole.env.GlobalVariablesKt.prefixPath;
 import static com.legacy07.aviole.env.HttpsTrustManagerKt.logger;
-import static com.legacy07.aviole.MainActivityKt.homePath;
-import static com.legacy07.aviole.MainActivityKt.prefixPath;
+import static com.legacy07.aviole.env.executeAction.getPid;
 
 /**
- * A background job launched by Termux.
+ * A job launched by Termux.
  */
-final class executeAction {
+public final class executeAction {
 
-    final Process mProcess;
-
-    public executeAction(String cwd, String fileToExecute, final String[] args) {
-        String[] env = buildEnvironment(false, cwd);
-        final String[] progArray = setupProcessArgs(fileToExecute, args);
-        final String processDescription = Arrays.toString(progArray);
-
-        Process process;
-        try {
-            process = Runtime.getRuntime().exec(progArray, env, new File(cwd));
-        } catch (IOException e) {
-            mProcess = null;
-            // TODO: Visible error message?
-            logger( "Failed running background job: " + processDescription);
-            return;
-        }
-
-        mProcess = process;
-        final int pid = getPid(mProcess);
-        final Bundle result = new Bundle();
-        final StringBuilder outResult = new StringBuilder();
-        final StringBuilder errResult = new StringBuilder();
-
-        Thread errThread = new Thread() {
-            @Override
-            public void run() {
-                InputStream stderr = mProcess.getErrorStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stderr, StandardCharsets.UTF_8));
-                String line;
-                try {
-                    // FIXME: Long lines.
-                    while ((line = reader.readLine()) != null) {
-                        errResult.append(line).append('\n');
-                        logger( "[" + pid + "] stderr: " + line);
-                    }
-                } catch (IOException e) {
-                    // Ignore.
-                }
-            }
-        };
-        errThread.start();
-
-        new Thread() {
-            @Override
-            public void run() {
-                logger( "[" + pid + "] starting: " + processDescription);
-                InputStream stdout = mProcess.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
-
-                String line;
-                try {
-                    // FIXME: Long lines.
-                    while ((line = reader.readLine()) != null) {
-                        logger( "[" + pid + "] stdout: " + line);
-                        outResult.append(line).append('\n');
-                    }
-                } catch (IOException e) {
-                    logger( "Error reading output $e");
-                }
-
-                try {
-                    int exitCode = mProcess.waitFor();
-                    //service.onBackgroundJobExited(BackgroundJob.this);
-                    if (exitCode == 0) {
-                        logger( "[" + pid + "] exited normally");
-                    } else {
-                        logger("[" + pid + "] exited with code: " + exitCode);
-                    }
-
-                    result.putString("stdout", outResult.toString());
-                    result.putInt("exitCode", exitCode);
-
-                    errThread.join();
-                    result.putString("stderr", errResult.toString());
-
-                    Intent data = new Intent();
-                    data.putExtra("result", result);
-
-                } catch (InterruptedException e) {
-                    // Ignore
-                }
-            }
-        }.start();
-    }
 
     private static void addToEnvIfPresent(List<String> environment, String name) {
         String value = System.getenv(name);
