@@ -19,7 +19,10 @@ class MainActivity : AppCompatActivity() {
         homePath="$appPath/files/home";
         prefixPath="$appPath/files/usr";
 
-
+        try {
+            this.supportActionBar!!.hide()
+        } catch (e: NullPointerException) {
+        }
         setContentView(R.layout.activity_main)
        // logger(execCmd(packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir+"/youtube-dl").toString())
         downloadYtdl(this, appPath).execute()
