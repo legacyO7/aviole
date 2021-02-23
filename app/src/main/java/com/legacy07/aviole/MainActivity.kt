@@ -8,26 +8,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.legacy07.aviole.env.downloadYtdl
-import com.legacy07.aviole.env.extractTar
+import com.legacy07.aviole.env.*
 import com.legacy07.aviole.ui.avHome
 import java.io.File
-
-
-@JvmField
-var appPath: String = ""
-
-@JvmField
-var tarPath: String = ""
-
-@JvmField
-var ytdlPath: String = ""
-
-@JvmField
-var homePath: String = ""
-
-@JvmField
-var prefixPath: String = ""
 
 class MainActivity : AppCompatActivity() {
     val RECORD_REQUEST_CODE = 101

@@ -10,9 +10,6 @@ import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.startActivity
-import com.legacy07.aviole.appPath
-import com.legacy07.aviole.prefixPath
 import com.legacy07.aviole.ui.avHome
 import java.io.*
 import java.net.HttpURLConnection
@@ -102,11 +99,11 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
         ytdl.setExecutable(true)
 
         if (!File(prefixPath).exists()) {
-            if (File(com.legacy07.aviole.tarPath).exists()) {
+            if (File(tarPath).exists()) {
                 mProgressDialog.setMessage("Extracting aviole module")
                 mProgressDialog.setIndeterminate(true);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                extractTar(File(com.legacy07.aviole.tarPath), File(appPath))
+                extractTar(File(tarPath), File(appPath))
                 mProgressDialog.cancel()
             } else {
                 //download module

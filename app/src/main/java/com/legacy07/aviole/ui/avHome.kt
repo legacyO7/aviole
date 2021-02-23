@@ -1,11 +1,15 @@
 package com.legacy07.aviole.ui
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.legacy07.aviole.R
 import com.legacy07.aviole.env.logger
@@ -20,6 +24,11 @@ class avHome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_av_home)
+        //setting toolbar
+        setSupportActionBar(findViewById(R.id.toolbar))
+        //home navigation
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         val urltext = findViewById<EditText>(R.id.urlinput)
         val urlbutton = findViewById<Button>(R.id.url_button)
@@ -49,6 +58,29 @@ class avHome : AppCompatActivity() {
 
     }
 
+    //setting menu in action bar
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menubar,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    // actions on click menu items
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.info -> {
+           startActivity(Intent(applicationContext,avInfo::class.java))
+            true
+        }
+        android.R.id.home -> {
+            Toast.makeText(this, "Home action", Toast.LENGTH_LONG).show()
+            true
+        }
+
+        else -> {
+            // If we got here, the user's action was not recognized.
+            // Invoke the superclass to handle it.
+            super.onOptionsItemSelected(item)
+        }
+    }
     fun extractYTId(ytUrl: String): String? {
         var vId: String? = null
         val pattern: Pattern = Pattern.compile(
