@@ -1,4 +1,4 @@
-package com.legacy07.aviole;
+package com.legacy07.aviole.env;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.legacy07.aviole.HttpsTrustManagerKt.logger;
+import static com.legacy07.aviole.env.HttpsTrustManagerKt.logger;
 import static com.legacy07.aviole.MainActivityKt.homePath;
 import static com.legacy07.aviole.MainActivityKt.prefixPath;
 
