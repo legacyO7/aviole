@@ -1,13 +1,19 @@
 package com.legacy07.aviole.env
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startActivity
+import com.legacy07.aviole.appPath
+import com.legacy07.aviole.prefixPath
+import com.legacy07.aviole.ui.avHome
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -94,6 +100,34 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
             Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
 
         ytdl.setExecutable(true)
+
+        if (!File(prefixPath).exists()) {
+            if (File(com.legacy07.aviole.tarPath).exists()) {
+                mProgressDialog.setMessage("Extracting aviole module")
+                mProgressDialog.setIndeterminate(true);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                extractTar(File(com.legacy07.aviole.tarPath), File(appPath))
+                mProgressDialog.cancel()
+            } else {
+                //download module
+                val alertDialogBuilder= AlertDialog.Builder(context)
+                alertDialogBuilder.setTitle("Download avioleModule")
+                    ?.setMessage("Trust me! You wont regret it!")
+                    ?.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        {
+                            //todo
+                        }
+                    }
+                    ?.setNegativeButton(android.R.string.no) { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    ?.show()
+
+            }
+        } else {
+            val intent: Intent = Intent(context, avHome::class.java)
+            context.startActivity(intent)
+        }
 
 /*
         logger("Done !!!")
