@@ -1,7 +1,10 @@
 package com.legacy07.aviole
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import java.io.File
+
 
 @JvmField var appPath:String=""
 @JvmField var tarPath:String=""
@@ -25,7 +28,23 @@ class MainActivity : AppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
        // logger(execCmd(packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir+"/youtube-dl").toString())
-        downloadYtdl(this, appPath).execute()
- }
+      //  downloadYtdl(this, appPath).execute()
+
+        if(!File(ytdlPath).exists()){
+            val mProgressDialog: ProgressDialog = ProgressDialog(this)
+            mProgressDialog.setMessage("Downloading youtube-dl binary")
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(true);
+
+            val downloadFile = downloadYtdl(this, appPath,mProgressDialog)
+            downloadFile.execute("https://yt-dl.org/downloads/latest/youtube-dl")
+
+            mProgressDialog.setOnCancelListener {
+                downloadFile.cancel(true) //cancel the task
+            }
+        }
+
+    }
 
 }
