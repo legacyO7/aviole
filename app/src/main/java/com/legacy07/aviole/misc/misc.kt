@@ -1,13 +1,14 @@
 package com.legacy07.aviole.misc
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import com.legacy07.aviole.env.downloadYtdl
 import com.legacy07.aviole.env.extractTar
 import com.legacy07.aviole.env.logger
+import com.legacy07.aviole.ui.avHome
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -32,11 +33,16 @@ class getFilesize: AsyncTask<String, String, String>() {
     }
 }
 
-fun initYTDLdownload(context: Context,mProgressDialog:ProgressDialog){
-    mProgressDialog.setMessage("Downloading youtube-dl binary [ ${getFilesize().execute(ytdl_url).get()}M ]")
-    mProgressDialog.setIndeterminate(true);
-    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-    mProgressDialog.setCancelable(true);
+fun initYTDLdownload(context: Context, mProgressDialog: ProgressDialog){
+    mProgressDialog.setMessage(
+        "Downloading youtube-dl binary [ ${
+            getFilesize().execute(ytdl_url).get()
+        }M ]"
+    )
+    mProgressDialog.isIndeterminate = true
+    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+    mProgressDialog.setCancelable(true)
+    mProgressDialog.show()
 
     val downloadFile = downloadYtdl(context, "$appPath/youtube-dl", mProgressDialog)
     downloadFile.execute(ytdl_url)
@@ -46,27 +52,54 @@ fun initYTDLdownload(context: Context,mProgressDialog:ProgressDialog){
     }
 }
 
-fun extract_aviole_tarball(mProgressDialog:ProgressDialog){
-    mProgressDialog.setMessage("Extracting aviole module")
-    mProgressDialog.setIndeterminate(true);
-    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    extractTar(File(tarPath), File(appPath))
-    mProgressDialog.cancel()
+class extract_aviole_tarball(val context: Context, val mProgressDialog: ProgressDialog,): AsyncTask<String, String, Boolean>() {
+    override fun onPreExecute() {
+        super.onPreExecute()
+        mProgressDialog.setMessage("Extracting aviole module")
+        mProgressDialog.isIndeterminate = true
+        mProgressDialog.setCancelable(false)
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        mProgressDialog.show()
+        mProgressDialog.create()
+    }
+
+    override fun onPostExecute(result: Boolean) {
+        super.onPostExecute(result)
+        if(result) {
+            mProgressDialog.dismiss()
+            if (File(prefixPath).exists() && File(ytdlPath).exists()) {
+                val intent: Intent = Intent(context, avHome::class.java)
+                context.startActivity(intent)
+            }
+        }
+    }
+    override fun doInBackground(vararg params: String?): Boolean {
+        extractTar(File(tarPath), File(appPath))
+        return true
+    }
 }
 
-fun initAvioleModuleDownload(context: Context,mProgressDialog:ProgressDialog){
+
+fun initAvioleModuleDownload(context: Context, mProgressDialog: ProgressDialog){
     val alertDialogBuilder = AlertDialog.Builder(context)
-    alertDialogBuilder.setTitle("Download avioleModule [ ${getFilesize().execute(
-        aviole_module_URL).get()}M ]")
+    alertDialogBuilder.setTitle(
+        "Download avioleModule [ ${
+            getFilesize().execute(
+                aviole_module_URL
+            ).get()
+        }M ]"
+    )
         ?.setMessage("Trust me! You wont regret it!")
         ?.setPositiveButton(android.R.string.yes) { dialog, which ->
             dialog.dismiss()
             mProgressDialog.setMessage("Downloading aviole module")
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setCancelable(true);
+            mProgressDialog.isIndeterminate = true
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            mProgressDialog.setCancelable(true)
+            mProgressDialog.show()
 
-            val downloadFile = downloadYtdl(context, "$appPath/avioleTPeM",
+            val downloadFile = downloadYtdl(
+                context, "$appPath/avioleTPeM",
                 mProgressDialog
             )
             downloadFile.execute(aviole_module_URL)
@@ -84,5 +117,13 @@ fun initAvioleModuleDownload(context: Context,mProgressDialog:ProgressDialog){
 }
 
 
-class misc {
+fun deleteFile(fileOrDirectory: File):Boolean {
+    if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()) deleteFile(
+        child
+    )
+    fileOrDirectory.delete()
+
+    return !fileOrDirectory.exists()
 }
+
+class misc
