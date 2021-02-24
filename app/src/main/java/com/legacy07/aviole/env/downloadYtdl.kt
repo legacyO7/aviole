@@ -101,9 +101,9 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
 
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-                extract_aviole_tarball(context,mProgressDialog)
+                extract_aviole_tarball(context)
             } else {
-             initAvioleModuleDownload(context,mProgressDialog)
+             initAvioleModuleDownload(context)
             }
         } else {
             val intent: Intent = Intent(context, avHome::class.java)

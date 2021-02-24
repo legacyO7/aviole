@@ -17,7 +17,6 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
     val RECORD_REQUEST_CODE = 101
-    var mProgressDialog: ProgressDialog? = null
     var alertDialogBuilder: AlertDialog.Builder? = null
 
     var setupbutton: Button?=null
@@ -54,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         homePath = "$appPath/files/home";
         prefixPath = "$appPath/files/usr";
 
-        mProgressDialog = ProgressDialog(this)
         alertDialogBuilder = AlertDialog.Builder(this)
 
 
@@ -99,13 +97,13 @@ class MainActivity : AppCompatActivity() {
         val ytdl_bin: File = File(ytdlPath)
 
         if (!ytdl_bin.exists()) {
-          initYTDLdownload(this,mProgressDialog!!)
+          initYTDLdownload(this)
         }
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-                extract_aviole_tarball(this,mProgressDialog!!).execute()
+                extract_aviole_tarball(this).execute()
             }else {
-              initAvioleModuleDownload(this,mProgressDialog!!)
+              initAvioleModuleDownload(this)
             }
         }
         if(File(prefixPath).exists()&&ytdl_bin.exists()){
