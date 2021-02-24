@@ -38,7 +38,10 @@ class getFilesize: AsyncTask<String, String, String>() {
     }
 }
 
-fun initYTDLdownload(context: Context, mProgressDialog: ProgressDialog){
+fun initYTDLdownload(context: Context){
+
+    val mProgressDialog: ProgressDialog=ProgressDialog(context)
+
     mProgressDialog.setMessage(
         "Downloading youtube-dl binary [ ${
             getFilesize().execute(ytdl_url).get()
@@ -57,7 +60,8 @@ fun initYTDLdownload(context: Context, mProgressDialog: ProgressDialog){
     }
 }
 
-class extract_aviole_tarball(val context: Context, val mProgressDialog: ProgressDialog,): AsyncTask<String, String, Boolean>() {
+class extract_aviole_tarball(val context: Context): AsyncTask<String, String, Boolean>() {
+    val mProgressDialog: ProgressDialog=ProgressDialog(context)
     override fun onPreExecute() {
         super.onPreExecute()
         mProgressDialog.setMessage("Extracting aviole module")
@@ -85,7 +89,8 @@ class extract_aviole_tarball(val context: Context, val mProgressDialog: Progress
 }
 
 
-fun initAvioleModuleDownload(context: Context, mProgressDialog: ProgressDialog){
+fun initAvioleModuleDownload(context: Context){
+    val mProgressDialog: ProgressDialog=ProgressDialog(context)
     val alertDialogBuilder = AlertDialog.Builder(context)
     alertDialogBuilder.setTitle(
         "Download avioleModule [ ${
@@ -122,8 +127,8 @@ fun initAvioleModuleDownload(context: Context, mProgressDialog: ProgressDialog){
 }
 
 
-fun deleteFile(fileOrDirectory: File):Boolean {
-    if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()) deleteFile(
+fun rmFile(fileOrDirectory: File):Boolean {
+    if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()) rmFile(
         child
     )
     fileOrDirectory.delete()
