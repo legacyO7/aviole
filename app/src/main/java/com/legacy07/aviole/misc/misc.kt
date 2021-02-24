@@ -7,40 +7,35 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.widget.TextView
-import com.legacy07.aviole.env.WorkerListener
-import com.legacy07.aviole.env.WorkerThread
-import com.legacy07.aviole.env.downloadYtdl
-import com.legacy07.aviole.env.extractTar
-import com.legacy07.aviole.env.logger
+import com.legacy07.aviole.env.*
 import com.legacy07.aviole.ui.avHome
 import java.io.File
 import java.io.IOException
-import java.lang.StringBuilder
 import java.net.URL
 import java.net.URLConnection
 
-class getFilesize: AsyncTask<String, String, String>() {
+class getFilesize : AsyncTask<String, String, String>() {
 
-    var fileSize:String?=""
+    var fileSize: String? = ""
 
     override fun doInBackground(vararg params: String): String? {
         try {
-            val url:URL =  URL(params[0])
+            val url: URL = URL(params[0])
             logger(params[0])
             val urlConnection: URLConnection = url.openConnection()
             urlConnection.connect()
             logger(urlConnection.contentLength.toString())
-           fileSize = (urlConnection.contentLength/(1024*1024)).toString()
+            fileSize = (urlConnection.contentLength / (1024 * 1024)).toString()
         } catch (e: IOException) {
-           logger(e.toString())
+            logger(e.toString())
         }
         return fileSize
     }
 }
 
-fun initYTDLdownload(context: Context){
+fun initYTDLdownload(context: Context) {
 
-    val mProgressDialog: ProgressDialog=ProgressDialog(context)
+    val mProgressDialog: ProgressDialog = ProgressDialog(context)
 
     mProgressDialog.setMessage(
         "Downloading youtube-dl binary [ ${
@@ -60,8 +55,8 @@ fun initYTDLdownload(context: Context){
     }
 }
 
-class extract_aviole_tarball(val context: Context): AsyncTask<String, String, Boolean>() {
-    val mProgressDialog: ProgressDialog=ProgressDialog(context)
+class extract_aviole_tarball(val context: Context) : AsyncTask<String, String, Boolean>() {
+    val mProgressDialog: ProgressDialog = ProgressDialog(context)
     override fun onPreExecute() {
         super.onPreExecute()
         mProgressDialog.setMessage("Extracting aviole module")
@@ -74,7 +69,7 @@ class extract_aviole_tarball(val context: Context): AsyncTask<String, String, Bo
 
     override fun onPostExecute(result: Boolean) {
         super.onPostExecute(result)
-        if(result) {
+        if (result) {
             mProgressDialog.dismiss()
             if (File(prefixPath).exists() && File(ytdlPath).exists()) {
                 val intent: Intent = Intent(context, avHome::class.java)
@@ -82,6 +77,7 @@ class extract_aviole_tarball(val context: Context): AsyncTask<String, String, Bo
             }
         }
     }
+
     override fun doInBackground(vararg params: String?): Boolean {
         extractTar(File(tarPath), File(appPath))
         return true
@@ -89,8 +85,8 @@ class extract_aviole_tarball(val context: Context): AsyncTask<String, String, Bo
 }
 
 
-fun initAvioleModuleDownload(context: Context){
-    val mProgressDialog: ProgressDialog=ProgressDialog(context)
+fun initAvioleModuleDownload(context: Context) {
+    val mProgressDialog: ProgressDialog = ProgressDialog(context)
     val alertDialogBuilder = AlertDialog.Builder(context)
     alertDialogBuilder.setTitle(
         "Download avioleModule [ ${
@@ -127,7 +123,7 @@ fun initAvioleModuleDownload(context: Context){
 }
 
 
-fun rmFile(fileOrDirectory: File):Boolean {
+fun rmFile(fileOrDirectory: File): Boolean {
     if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()) rmFile(
         child
     )
@@ -136,10 +132,12 @@ fun rmFile(fileOrDirectory: File):Boolean {
     return !fileOrDirectory.exists()
 }
 
-fun executeToTextView(activity: Activity, tv:TextView,cwd:String, fileToExecute:String,args:Array<String> ){
-    val worker = WorkerThread(  cwd,
-        fileToExecute,
-       args)
+fun executeToTextView(activity: Activity, tv: TextView, args: Array<String>) {
+    val worker = WorkerThread(
+        activity, appPath,
+        "$appPath/files/usr/bin/python",
+        args
+    )
     tv.setText("Loading...")
 
     worker.registerWorkerListener(WorkerListener { thread ->
@@ -151,7 +149,7 @@ fun executeToTextView(activity: Activity, tv:TextView,cwd:String, fileToExecute:
             val result = iter.next() as String
             sb.append(result)
         }
-       activity.runOnUiThread(Runnable {
+        activity.runOnUiThread(Runnable {
             tv.setText(sb.toString().trim())
         })
     })
@@ -159,5 +157,12 @@ fun executeToTextView(activity: Activity, tv:TextView,cwd:String, fileToExecute:
     val thread = Thread(worker)
     thread.start()
 }
+
+fun avCommand(command: String): Array<String> {
+       return "youtube-dl $command".split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+}
+fun stringToWords(s : String) = s.trim().splitToSequence(' ')
+    .filter { it.isNotEmpty() } // or: .filter { it.isNotBlank() }
+    .toList()
 
 class misc

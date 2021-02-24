@@ -1,7 +1,11 @@
 package com.legacy07.aviole.env;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,14 +31,27 @@ public class WorkerThread implements Runnable{
     Process mProcess;
     String cwd,fileToExecute;
     String[] args;
+    Activity context;
 
 
     final int pid = getPid(mProcess);
-
-    public WorkerThread(String cwd, String fileToExecute, String[] args) {
+    ProgressDialog pd = null;
+    public WorkerThread(Activity context, String cwd, String fileToExecute, String[] args) {
+        this.context=context;
         this.cwd=cwd;
         this.fileToExecute=fileToExecute;
         this.args=args;
+
+
+        if(context!=null){
+            pd=new ProgressDialog(context);
+            pd.setTitle("Processing request");
+            pd.setIndeterminate(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Connecting to aviole system");
+            pd.show();
+        }
+
     }
 
     @Override
@@ -60,7 +77,6 @@ public class WorkerThread implements Runnable{
         InputStream stdout = mProcess.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
         String line;
-        outputText="";
         final Bundle result = new Bundle();
 
 
@@ -71,7 +87,6 @@ public class WorkerThread implements Runnable{
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stderr, StandardCharsets.UTF_8));
                 String line;
                 try {
-                    // FIXME: Long lines.
                     while ((line = reader.readLine()) != null) {
                         errResult.append(line).append('\n');
                         logger( "[" + pid + "] stderr: " + line);
@@ -83,14 +98,38 @@ public class WorkerThread implements Runnable{
         };
         errThread.start();
 
-
         try {
-            // FIXME: Long lines.
             while ((line = reader.readLine()) != null) {
                 logger( "[" + pid + "] stdout: " + line);
+                if(line.contains("[download]")){
+
+                    String finalLine = line;
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(finalLine.contains("% of ")&&!finalLine.contains("100% of ")){
+                                logger((finalLine.substring(finalLine.indexOf('%')-3, finalLine.indexOf('%')-2).replaceAll("[^0-9]", "").trim()));
+                                pd.setProgress(Integer.parseInt(finalLine.substring(finalLine.indexOf('%')-5, finalLine.indexOf('%')-2).replaceAll("[^0-9]", "").trim()));
+
+                            }
+                            else if(finalLine.contains("Destination:")){
+                                pd.dismiss();
+                                pd.setTitle("Downloading media");
+                                pd.setIndeterminate(false);
+                                pd.setMessage(finalLine.split("Destination: ")[1]);
+                                pd.show();
+                                logger("destination found");
+                            }
+
+                        }
+                    });
+
+
+
+                }
                 outResult.append(line).append('\n');
             }
-            outputText=line;
+            pd.cancel();
         } catch (IOException e) {
             logger( "Error reading output $e");
         }
