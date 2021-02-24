@@ -21,19 +21,8 @@ class MainActivity : AppCompatActivity() {
     var alertDialogBuilder: AlertDialog.Builder? = null
 
     var setupbutton: Button?=null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        appPath = packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir;
-        tarPath = "$appPath/avioleTPeM.tar.gz";
-        ytdlPath = "$appPath/youtube-dl";
-        homePath = "$appPath/files/home";
-        prefixPath = "$appPath/files/usr";
-
-        mProgressDialog = ProgressDialog(this)
-        alertDialogBuilder = AlertDialog.Builder(this)
-
+    override fun onStart() {
+        super.onStart()
         val w_permission = ContextCompat.checkSelfPermission(
             this,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -52,7 +41,23 @@ class MainActivity : AppCompatActivity() {
             this.supportActionBar!!.hide()
         } catch (e: NullPointerException) {
         }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        appPath = packageManager.getPackageInfo(packageName, 0).applicationInfo.dataDir;
+        tarPath = "$appPath/avioleTPeM.tar.gz";
+        ytdlPath = "$appPath/youtube-dl";
+        homePath = "$appPath/files/home";
+        prefixPath = "$appPath/files/usr";
+
+        mProgressDialog = ProgressDialog(this)
+        alertDialogBuilder = AlertDialog.Builder(this)
+
+
         setupbutton=findViewById(R.id.setup_button)
 
 
@@ -98,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-              extract_aviole_tarball(mProgressDialog!!)
+                extract_aviole_tarball(this,mProgressDialog!!).execute()
             }else {
               initAvioleModuleDownload(this,mProgressDialog!!)
             }

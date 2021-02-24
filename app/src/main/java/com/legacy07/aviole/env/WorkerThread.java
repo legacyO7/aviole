@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.legacy07.aviole.misc.GlobalVariablesKt.outputText;
 import static com.legacy07.aviole.env.HttpsTrustManagerKt.logger;
-import static com.legacy07.aviole.env.executeAction.getPid;
+import static com.legacy07.aviole.env.executeTermuxAction.getPid;
 
 public class WorkerThread implements Runnable{
     final StringBuilder outResult = new StringBuilder();
@@ -40,8 +40,8 @@ public class WorkerThread implements Runnable{
     @Override
     public void run() {
 
-        String[] env = executeAction.buildEnvironment(false, cwd);
-        final String[] progArray = executeAction.setupProcessArgs(fileToExecute, args);
+        String[] env = executeTermuxAction.buildEnvironment(false, cwd);
+        final String[] progArray = executeTermuxAction.setupProcessArgs(fileToExecute, args);
         final String processDescription = Arrays.toString(progArray);
 
         Process process;

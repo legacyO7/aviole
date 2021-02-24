@@ -14,7 +14,7 @@ import static com.legacy07.aviole.misc.GlobalVariablesKt.prefixPath;
 /**
  * A job launched by Termux.
  */
-public final class executeAction {
+public final class executeTermuxAction {
 
 
     private static void addToEnvIfPresent(List<String> environment, String name) {

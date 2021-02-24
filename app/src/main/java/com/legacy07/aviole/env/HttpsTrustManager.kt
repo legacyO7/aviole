@@ -34,15 +34,15 @@ fun execCmd(cmd: String?): String? {
     return if (s.hasNext()) s.next() else "got nothing"
 }
 
-fun extractTar(sourceFile: File, destDir: File){
+fun extractTar(sourceFile: File, destDir: File):Boolean{
     val ua = TarGZipUnArchiver()
     var manager:ConsoleLoggerManager = ConsoleLoggerManager()
     ua.enableLogging(manager.getLoggerForComponent("bla"))
-// -- end of logging part
-// -- end of logging part
     ua.sourceFile = sourceFile
     ua.destDirectory = destDir
     ua.extract()
+    logger("extracted")
+    return true
 }
 
 fun changePermission(path: File){

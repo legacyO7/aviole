@@ -101,7 +101,7 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
 
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-                extract_aviole_tarball(mProgressDialog)
+                extract_aviole_tarball(context,mProgressDialog)
             } else {
              initAvioleModuleDownload(context,mProgressDialog)
             }
