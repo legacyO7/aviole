@@ -1,18 +1,19 @@
 package com.legacy07.aviole.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.legacy07.aviole.R
 import com.legacy07.aviole.env.logger
+import com.legacy07.aviole.misc.avCommand
+import com.legacy07.aviole.misc.executeToTextView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -34,9 +35,10 @@ class avHome : AppCompatActivity() {
         val urlbutton = findViewById<Button>(R.id.url_button)
         val vView = findViewById<LinearLayout>(R.id.vview)
         val videoView = findViewById<YouTubePlayerView>(R.id.videoview)
+        val activity:Activity=this
 
         vView.visibility = View.GONE
-
+        val tvtv=findViewById<TextView>(R.id.tvtv)
 
         videoView.addYouTubePlayerListener(object :
             AbstractYouTubePlayerListener() {
@@ -50,6 +52,10 @@ class avHome : AppCompatActivity() {
                         if (urltext.text.toString().trim()!="null")
                             youTubePlayer.loadVideo(extractYTId(urltext.text.toString())!!, 0f)
                         vView.visibility = View.VISIBLE
+
+                        executeToTextView(activity,tvtv, avCommand("-x --audio-format mp3 -o ${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_MUSIC}/%(title)s.%(ext)s ${urltext.text.toString().trim()}"))
+
+
                     }
                 }
 

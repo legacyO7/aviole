@@ -16,9 +16,9 @@ class avInfo : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_av_info)
         val ytdltv=findViewById<TextView>(R.id.ytdl_text)
-        executeToTextView(this,ytdltv,  appPath,
-            "$appPath/files/usr/bin/python",
-            arrayOf("youtube-dl", "--version"))
+        executeToTextView(this,ytdltv, avCommand("--version")
+        )
+        //arrayOf("youtube-dl", "--version")
 
         val downloadytdlbutton=findViewById<ImageView>(R.id.downloadytdl)
         downloadytdlbutton.setOnClickListener{
