@@ -1,16 +1,21 @@
 package com.legacy07.aviole.misc
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
+import android.widget.TextView
+import com.legacy07.aviole.env.WorkerListener
+import com.legacy07.aviole.env.WorkerThread
 import com.legacy07.aviole.env.downloadYtdl
 import com.legacy07.aviole.env.extractTar
 import com.legacy07.aviole.env.logger
 import com.legacy07.aviole.ui.avHome
 import java.io.File
 import java.io.IOException
+import java.lang.StringBuilder
 import java.net.URL
 import java.net.URLConnection
 
@@ -124,6 +129,30 @@ fun deleteFile(fileOrDirectory: File):Boolean {
     fileOrDirectory.delete()
 
     return !fileOrDirectory.exists()
+}
+
+fun executeToTextView(activity: Activity, tv:TextView,cwd:String, fileToExecute:String,args:Array<String> ){
+    val worker = WorkerThread(  cwd,
+        fileToExecute,
+       args)
+    tv.setText("Loading...")
+
+    worker.registerWorkerListener(WorkerListener { thread ->
+        println("Work done")
+        val results = thread.getResults()
+        var sb: StringBuilder = StringBuilder()
+        val iter: Iterator<*> = results.iterator()
+        while (iter.hasNext()) {
+            val result = iter.next() as String
+            sb.append(result)
+        }
+       activity.runOnUiThread(Runnable {
+            tv.setText(sb.toString().trim())
+        })
+    })
+
+    val thread = Thread(worker)
+    thread.start()
 }
 
 class misc
