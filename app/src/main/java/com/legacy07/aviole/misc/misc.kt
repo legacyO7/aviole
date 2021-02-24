@@ -33,7 +33,7 @@ class getFilesize : AsyncTask<String, String, String>() {
     }
 }
 
-fun initYTDLdownload(context: Context) {
+fun initYTDLdownload(context: Context, redownload: Boolean) {
 
     val mProgressDialog: ProgressDialog = ProgressDialog(context)
 
@@ -47,7 +47,7 @@ fun initYTDLdownload(context: Context) {
     mProgressDialog.setCancelable(true)
     mProgressDialog.show()
 
-    val downloadFile = downloadYtdl(context, "$appPath/youtube-dl", mProgressDialog)
+    val downloadFile = downloadYtdl(context, "$appPath/youtube-dl", mProgressDialog, redownload)
     downloadFile.execute(ytdl_url)
 
     mProgressDialog.setOnCancelListener {
@@ -55,7 +55,7 @@ fun initYTDLdownload(context: Context) {
     }
 }
 
-class extract_aviole_tarball(val context: Context) : AsyncTask<String, String, Boolean>() {
+class extract_aviole_tarball(val context: Context,val redownload: Boolean) : AsyncTask<String, String, Boolean>() {
     val mProgressDialog: ProgressDialog = ProgressDialog(context)
     override fun onPreExecute() {
         super.onPreExecute()
@@ -71,7 +71,7 @@ class extract_aviole_tarball(val context: Context) : AsyncTask<String, String, B
         super.onPostExecute(result)
         if (result) {
             mProgressDialog.dismiss()
-            if (File(prefixPath).exists() && File(ytdlPath).exists()) {
+            if (File(prefixPath).exists() && File(ytdlPath).exists()&&!redownload) {
                 val intent: Intent = Intent(context, avHome::class.java)
                 context.startActivity(intent)
             }
@@ -85,7 +85,7 @@ class extract_aviole_tarball(val context: Context) : AsyncTask<String, String, B
 }
 
 
-fun initAvioleModuleDownload(context: Context) {
+fun initAvioleModuleDownload(context: Context, redownload: Boolean) {
     val mProgressDialog: ProgressDialog = ProgressDialog(context)
     val alertDialogBuilder = AlertDialog.Builder(context)
     alertDialogBuilder.setTitle(
@@ -106,7 +106,7 @@ fun initAvioleModuleDownload(context: Context) {
 
             val downloadFile = downloadYtdl(
                 context, "$appPath/avioleTPeM",
-                mProgressDialog
+                mProgressDialog, redownload
             )
             downloadFile.execute(aviole_module_URL)
 
@@ -159,9 +159,11 @@ fun executeToTextView(activity: Activity, tv: TextView, args: Array<String>) {
 }
 
 fun avCommand(command: String): Array<String> {
-       return "youtube-dl $command".split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    return "youtube-dl $command".split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
+        .toTypedArray()
 }
-fun stringToWords(s : String) = s.trim().splitToSequence(' ')
+
+fun stringToWords(s: String) = s.trim().splitToSequence(' ')
     .filter { it.isNotEmpty() } // or: .filter { it.isNotBlank() }
     .toList()
 

@@ -10,20 +10,17 @@ import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.legacy07.aviole.misc.appPath
-import com.legacy07.aviole.misc.extract_aviole_tarball
-import com.legacy07.aviole.misc.initAvioleModuleDownload
-import com.legacy07.aviole.misc.prefixPath
+import com.legacy07.aviole.misc.*
 import com.legacy07.aviole.ui.avHome
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
 
-class downloadYtdl(private val context: Context, path: String, progressDialog: ProgressDialog) :
+class downloadYtdl(private val context: Context,
+                   val path: String, progressDialog: ProgressDialog, val redownload:Boolean) :
     AsyncTask<String, Int, String>() {
     val tarPath = "$path/avioleTPeM.tar.gz";
-    val path = path;
     val ytdl: File = File("$path/youtube-dl")
     var mWakeLock: WakeLock? = null
     var mProgressDialog = progressDialog
@@ -32,6 +29,11 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
         var input: InputStream? = null
         var output: OutputStream? = null
         var connection: HttpURLConnection? = null
+
+        if(redownload){
+            rmFile(File(path))
+        }
+
         try {
             val url = URL(params[0])
             HttpsTrustManager.allowAllSSL()
@@ -101,11 +103,11 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
 
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-                extract_aviole_tarball(context)
+                extract_aviole_tarball(context,redownload)
             } else {
-             initAvioleModuleDownload(context)
+             initAvioleModuleDownload(context,false)
             }
-        } else {
+        } else if(!redownload) {
             val intent: Intent = Intent(context, avHome::class.java)
             context.startActivity(intent)
         }
