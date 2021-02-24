@@ -1,26 +1,15 @@
 package com.legacy07.aviole.env;
-import android.content.Intent;
-import android.os.Bundle;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import static com.legacy07.aviole.env.GlobalVariablesKt.homePath;
-import static com.legacy07.aviole.env.GlobalVariablesKt.outputText;
-import static com.legacy07.aviole.env.GlobalVariablesKt.prefixPath;
-import static com.legacy07.aviole.env.HttpsTrustManagerKt.logger;
-import static com.legacy07.aviole.env.executeAction.getPid;
+import static com.legacy07.aviole.misc.GlobalVariablesKt.homePath;
+import static com.legacy07.aviole.misc.GlobalVariablesKt.prefixPath;
 
 /**
  * A job launched by Termux.
