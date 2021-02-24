@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.legacy07.aviole.R
 import com.legacy07.aviole.env.*
+import com.legacy07.aviole.misc.appPath
 import java.lang.StringBuilder
 
 class avInfo : AppCompatActivity() {

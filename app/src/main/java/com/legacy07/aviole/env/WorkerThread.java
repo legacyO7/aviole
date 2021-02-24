@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.legacy07.aviole.env.GlobalVariablesKt.outputText;
+import static com.legacy07.aviole.misc.GlobalVariablesKt.outputText;
 import static com.legacy07.aviole.env.HttpsTrustManagerKt.logger;
 import static com.legacy07.aviole.env.executeAction.getPid;
 

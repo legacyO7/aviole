@@ -3,4 +3,5 @@
     <string name="go">Go</string>
     <string name="url_hint">Url goes here</string>
     <string name="success_text">Well,Well, Well...\nWhat do we have here!</string>
+    <string name="setup">Setup Aviole</string>
 </resources>

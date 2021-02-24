@@ -10,6 +10,10 @@ import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.legacy07.aviole.misc.appPath
+import com.legacy07.aviole.misc.extract_aviole_tarball
+import com.legacy07.aviole.misc.initAvioleModuleDownload
+import com.legacy07.aviole.misc.prefixPath
 import com.legacy07.aviole.ui.avHome
 import java.io.*
 import java.net.HttpURLConnection
@@ -18,10 +22,9 @@ import java.net.URL
 
 class downloadYtdl(private val context: Context, path: String, progressDialog: ProgressDialog) :
     AsyncTask<String, Int, String>() {
-    val filePath = "$path/youtube-dl";
-    val folderPath = path;
     val tarPath = "$path/avioleTPeM.tar.gz";
-    val ytdl: File = File(filePath)
+    val path = path;
+    val ytdl: File = File("$path/youtube-dl")
     var mWakeLock: WakeLock? = null
     var mProgressDialog = progressDialog
 
@@ -34,12 +37,10 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
             HttpsTrustManager.allowAllSSL()
             connection = url.openConnection() as HttpURLConnection
             connection.connect()
-            // this will be useful so that you can show a typical 0-100% progress bar
             val fileLength = connection.contentLength
 
-            // download the file
             input = BufferedInputStream(url.openStream())
-            output = FileOutputStream(filePath)
+            output = FileOutputStream(path)
             val data = ByteArray(1024)
             var total: Long = 0
             var count: Int
@@ -100,26 +101,9 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
 
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-                mProgressDialog.setMessage("Extracting aviole module")
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                extractTar(File(tarPath), File(appPath))
-                mProgressDialog.cancel()
+                extract_aviole_tarball(mProgressDialog)
             } else {
-                //download module
-                val alertDialogBuilder= AlertDialog.Builder(context)
-                alertDialogBuilder.setTitle("Download avioleModule")
-                    ?.setMessage("Trust me! You wont regret it!")
-                    ?.setPositiveButton(android.R.string.yes) { dialog, which ->
-                        {
-                            //todo
-                        }
-                    }
-                    ?.setNegativeButton(android.R.string.no) { dialog, which ->
-                        dialog.dismiss()
-                    }
-                    ?.show()
-
+             initAvioleModuleDownload(context,mProgressDialog)
             }
         } else {
             val intent: Intent = Intent(context, avHome::class.java)
@@ -137,14 +121,8 @@ class downloadYtdl(private val context: Context, path: String, progressDialog: P
                 logger("Extracted !!")
             }
         } else {*/
-            //   changePermission(File("$folderPath/files/usr/bin/youtube-dl"))
+        //   changePermission(File("$folderPath/files/usr/bin/youtube-dl"))
 
-//            executeAction(
-//                folderPath,
-//                "$folderPath/files/usr/bin/python",
-//                arrayOf("youtube-dl", "-v")
-//            )
- //       }
 
     }
 }
