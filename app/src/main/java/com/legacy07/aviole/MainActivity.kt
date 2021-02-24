@@ -97,13 +97,13 @@ class MainActivity : AppCompatActivity() {
         val ytdl_bin: File = File(ytdlPath)
 
         if (!ytdl_bin.exists()) {
-          initYTDLdownload(this)
+          initYTDLdownload(this,false)
         }
         if (!File(prefixPath).exists()) {
             if (File(tarPath).exists()) {
-                extract_aviole_tarball(this).execute()
+                extract_aviole_tarball(this,false).execute()
             }else {
-              initAvioleModuleDownload(this)
+              initAvioleModuleDownload(this,false)
             }
         }
         if(File(prefixPath).exists()&&ytdl_bin.exists()){

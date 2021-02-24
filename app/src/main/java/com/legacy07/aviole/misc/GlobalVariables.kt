@@ -19,8 +19,8 @@ var homePath: String = ""
 var prefixPath: String = ""
 
 @JvmField
-var aviole_module_URL="https://raw.githubusercontent.com/legacyO7/scheduler/master/README.md"
-//var aviole_module_URL="https://github.com/legacyO7/aviole/raw/master/aviole_tarball_releases/aviole.tar.gz"
+//var aviole_module_URL="https://raw.githubusercontent.com/legacyO7/scheduler/master/README.md"
+var aviole_module_URL="https://github.com/legacyO7/aviole/raw/master/aviole_tarball_releases/aviole.tar.gz"
 
 @JvmField
 var ytdl_url="https://yt-dl.org/downloads/latest/youtube-dl"
