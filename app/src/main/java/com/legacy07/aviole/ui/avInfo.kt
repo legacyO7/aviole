@@ -12,7 +12,7 @@ class avInfo : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_av_info)
         val ytdltv=findViewById<TextView>(R.id.ytdl_text)
-        executeToTextView(this,ytdltv, avCommand("--version")
+        executeToTextView(this,ytdltv, avCommand("")
         )
 
         val downloadytdlbutton=findViewById<ImageView>(R.id.downloadytdl)
