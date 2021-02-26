@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         ytdlPath = "$appPath/youtube-dl";
         homePath = "$appPath/files/home";
         prefixPath = "$appPath/files/usr";
+        binPath = "$prefixPath/bin";
 
         alertDialogBuilder = AlertDialog.Builder(this)
 
