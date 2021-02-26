@@ -44,7 +44,8 @@ class avHome : AppCompatActivity() {
 
        // (File("$appPath/ffprobe").setExecutable(true))
       // changePermission(File("$appPath/ffprobe"))
-        executeToTextView(activity,tvtv, avCommand("-v -x --audio-format mp3 --ffmpeg-location /data/data/com.legacy07.aviole/files/usr/bin --ignore-config https://youtu.be/Uulu0pnaK70"))
+      //  executeToTextView(activity,tvtv,"youtube-dl", avCommand("-v -x --audio-format mp3 --ffmpeg-location /data/data/com.legacy07.aviole/files/usr/bin --ignore-config https://youtu.be/Uulu0pnaK70"))
+        executeToTextView(activity,tvtv, avCommand("pkg|install python -y"))
 
         urlbutton.setOnClickListener {
             urltext.setText("blahhh")

@@ -135,13 +135,13 @@ fun rmFile(fileOrDirectory: File): Boolean {
     return !fileOrDirectory.exists()
 }
 
-fun executeToTextView(activity: Activity, tv: TextView, args: Array<String>) {
+fun executeToTextView(activity: Activity,tv: TextView, args: Array<String>) {
     val worker = WorkerThread(
-        activity, "$appPath/files/home",
+        activity, "$prefixPath/bin",
        // "$prefixPath/bin/pip",
-        "$prefixPath/bin/ffmpeg",
-       // arrayOf("install","youtube-dl")
-        arrayOf("-v","--ffmpeg-location","/data/data/com.legacy07.aviole/files/usr/bin/")
+        "$binPath/$filetoexec",
+        args
+     //   arrayOf("-v","--ffmpeg-location","/data/data/com.legacy07.aviole/files/usr/bin/")
     )
     tv.setText("Loading...")
 
@@ -164,7 +164,8 @@ fun executeToTextView(activity: Activity, tv: TextView, args: Array<String>) {
 }
 
 fun avCommand(command: String): Array<String> {
-    return "$command".split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
+    filetoexec=command.split("|")[0]
+    return command.split("|")[1].split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
         .toTypedArray()
 }
 
