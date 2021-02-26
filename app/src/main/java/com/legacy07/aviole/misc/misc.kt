@@ -13,6 +13,9 @@ import java.io.File
 import java.io.IOException
 import java.net.URL
 import java.net.URLConnection
+import java.nio.file.Files
+import java.nio.file.attribute.PosixFilePermission
+import java.util.HashSet
 
 class getFilesize : AsyncTask<String, String, String>() {
 
@@ -134,9 +137,11 @@ fun rmFile(fileOrDirectory: File): Boolean {
 
 fun executeToTextView(activity: Activity, tv: TextView, args: Array<String>) {
     val worker = WorkerThread(
-        activity, appPath,
-        "$appPath/files/usr/bin/python",
-        args
+        activity, "$appPath/files/home",
+       // "$prefixPath/bin/pip",
+        "$prefixPath/bin/ffmpeg",
+       // arrayOf("install","youtube-dl")
+        arrayOf("-v","--ffmpeg-location","/data/data/com.legacy07.aviole/files/usr/bin/")
     )
     tv.setText("Loading...")
 
@@ -159,12 +164,26 @@ fun executeToTextView(activity: Activity, tv: TextView, args: Array<String>) {
 }
 
 fun avCommand(command: String): Array<String> {
-    return "youtube-dl $command".split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
+    return "$command".split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
         .toTypedArray()
 }
 
-fun stringToWords(s: String) = s.trim().splitToSequence(' ')
-    .filter { it.isNotEmpty() } // or: .filter { it.isNotBlank() }
-    .toList()
+fun changePermission(path: File){
+
+    val perms: MutableSet<PosixFilePermission> = HashSet()
+    perms.add(PosixFilePermission.OWNER_READ)
+    perms.add(PosixFilePermission.OWNER_WRITE)
+    perms.add(PosixFilePermission.OWNER_EXECUTE)
+
+    perms.add(PosixFilePermission.OTHERS_READ)
+    perms.add(PosixFilePermission.OTHERS_WRITE)
+    perms.add(PosixFilePermission.OTHERS_EXECUTE)
+
+    perms.add(PosixFilePermission.GROUP_READ)
+    perms.add(PosixFilePermission.GROUP_WRITE)
+    perms.add(PosixFilePermission.GROUP_EXECUTE)
+
+    Files.setPosixFilePermissions(path.toPath(), perms)
+}
 
 class misc

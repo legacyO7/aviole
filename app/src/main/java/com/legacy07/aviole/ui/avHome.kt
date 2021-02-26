@@ -12,24 +12,24 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.legacy07.aviole.R
 import com.legacy07.aviole.env.logger
-import com.legacy07.aviole.misc.avCommand
-import com.legacy07.aviole.misc.executeToTextView
+import com.legacy07.aviole.misc.*
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+//esac; \
+//_PYTHON_PROJECT_BASE=/home/legacy07/.termux-build/python/build _PYTHON_HOST_PLATFORM=linux-aarch64 PYTHONPATH=/home/legacy07/.termux-build/python/build/build/lib.linux-aarch64-3.9:/home/legacy07/.termux-build/python/src/Lib _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata__linux_ python3.9 -m ensurepip \
+//$ensurepip --root=/ ; \
 
 class avHome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_av_home)
-        //setting toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
-        //home navigation
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
 
         val urltext = findViewById<EditText>(R.id.urlinput)
         val urlbutton = findViewById<Button>(R.id.url_button)
@@ -40,27 +40,24 @@ class avHome : AppCompatActivity() {
         vView.visibility = View.GONE
         val tvtv=findViewById<TextView>(R.id.tvtv)
 
-        videoView.addYouTubePlayerListener(object :
-            AbstractYouTubePlayerListener() {
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-
-                urlbutton.setOnClickListener {
-                    if (urltext.text.toString().trim() != "") {
-                        val uri: Uri = Uri.parse(urltext.text.toString().trim())
-                        getLifecycle().addObserver(videoView);
-
-                        if (urltext.text.toString().trim()!="null")
-                            youTubePlayer.loadVideo(extractYTId(urltext.text.toString())!!, 0f)
-                        vView.visibility = View.VISIBLE
-
-                        executeToTextView(activity,tvtv, avCommand("-x --audio-format mp3 -o ${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_MUSIC}/%(title)s.%(ext)s ${urltext.text.toString().trim()}"))
 
 
-                    }
-                }
+       // (File("$appPath/ffprobe").setExecutable(true))
+      // changePermission(File("$appPath/ffprobe"))
+        executeToTextView(activity,tvtv, avCommand("-v -x --audio-format mp3 --ffmpeg-location /data/data/com.legacy07.aviole/files/usr/bin --ignore-config https://youtu.be/Uulu0pnaK70"))
+
+        urlbutton.setOnClickListener {
+            urltext.setText("blahhh")
+            if (urltext.text.toString().trim() != "") {
+                val uri: Uri = Uri.parse(urltext.text.toString().trim())
+                getLifecycle().addObserver(videoView);
+
+                if (urltext.text.toString().trim()!="null")
+                vView.visibility = View.VISIBLE
+
 
             }
-        })
+        }
 
     }
 
